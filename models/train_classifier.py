@@ -26,9 +26,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.base import TransformerMixin, BaseEstimator
 
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_auc_score, auc
-
+from sklearn.metrics import f1_score, precision_score, recall_score
 import spacy
 #spacy.cli.download("en_core_web_lg")
 nlp = spacy.load("en_core_web_lg")
@@ -135,6 +134,13 @@ def evaluate_model(model, X_test, Y_test):
         roc_score = roc_auc_score(Y_test[column].astype(int), y_pred[:, Y_test.columns.get_loc(column)].astype(int) )
         print(f'roc_auc_score : {roc_score}')
         roc_auc_scores.append(roc_score)
+        precision, recall, _ = precision_recall_curve(Y_test, y_pred)
+        f1 = f1_score(Y_test, y_pred)
+        precision_val = precision_score(Y_test, y_pred)
+        recall_val = recall_score(Y_test, y_pred)
+        print(f'f1_score : {f1}')
+        print(f'precision_score : {precision_val}')
+        print(f'recall_score : {recall_val}')
     except ValueError:
         pass    
     print(f' mean roc score {np.mean(roc_auc_scores)}')
